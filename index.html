@@ -414,7 +414,10 @@
                      doc.text(lines, 15, 20);
                 }
 
-                doc.save('Anschreiben_LRA_Erding_${currentDate}.pdf');
+                const now = new Date();
+                const formattedDate = now.toLocaleDateString('de-DE').replace(/\./g, '_');
+                doc.save(`Anschreiben_LRA_Erding_${formattedDate}.pdf`);
+
             } catch(e) {
                 console.error("PDF Generation Error: ", e);
                 alert("Не удалось сгенерировать PDF. Возможно, в вашем браузере есть ограничения. Попробуйте скопировать текст и вставить его в текстовый редактор.");
