@@ -47,4 +47,5 @@
 
 ---
 
-[🌍 **deutschlandtogether.github.io**](https://deutschlandtogether.github.io/) • [✈️ Telegram](https://t.me/ErdingTogether)
+[🌍 **deutschlandtogether.github.io**](https://deutschlandtogether.github.io/)
+[✈️ Telegram](https://t.me/ErdingTogether)
