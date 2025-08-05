@@ -1,5 +1,6 @@
-
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import ru from '../locales/ru.json';
+import ua from '../locales/ua.json';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 
 type Language = 'ru' | 'ua';
 type Translations = { [key: string]: string };
@@ -8,48 +9,22 @@ interface I18nContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
   t: (key: string) => string;
-  isLoading: boolean;
 }
 
 const I18nContext = createContext<I18nContextType | undefined>(undefined);
 
-const loadTranslations = async (lang: Language): Promise<Translations> => {
-  const response = await fetch(`/locales/${lang}.json`);
-  if (!response.ok) {
-    throw new Error(`Failed to load translations for ${lang}`);
-  }
-  return response.json();
-};
+const allTranslations: Record<Language, Translations> = { ru, ua };
 
 export const I18nProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [language, setLanguageState] = useState<Language>(() => {
-    return (localStorage.getItem('language') as Language) || 'ru';
-  });
-  const [translations, setTranslations] = useState<Translations>({});
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    setIsLoading(true);
-    loadTranslations(language)
-      .then(setTranslations)
-      .catch(err => {
-        console.error(err);
-        // Fallback to Russian if Ukrainian fails to load
-        if (language === 'ua') {
-          setLanguageState('ru');
-        }
-      })
-      .finally(() => {
-        // Add a small delay for a smoother visual transition
-        setTimeout(() => setIsLoading(false), 200);
-      });
-  }, [language]);
+  const [language, setLanguageState] = useState<Language>(
+    () => (localStorage.getItem('language') as Language) || 'ru'
+  );
 
   const setLanguage = (lang: Language) => {
     if (lang !== language) {
-        localStorage.setItem('language', lang);
-        setLanguageState(lang);
-        document.documentElement.lang = lang;
+      localStorage.setItem('language', lang);
+      setLanguageState(lang);
+      document.documentElement.lang = lang;
     }
   };
 
@@ -58,12 +33,12 @@ export const I18nProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, [language]);
 
   const t = (key: string): string => {
-    return translations[key] || key;
+    return allTranslations[language][key] || key;
   };
 
   return (
-    <I18nContext.Provider value={{ language, setLanguage, t, isLoading }}>
-      {children}
+    <I18nContext.Provider value={{ language, setLanguage, t }}>
+    {children}
     </I18nContext.Provider>
   );
 };
