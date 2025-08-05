@@ -1,0 +1,6 @@
+{
+  "name": "ErdingTogether: Website",
+  "description": "A web application to help Ukrainian refugees in Erding, Germany, generate official letters to local authorities, etc.; The app provides templates for common requests and generates downloadable PDF files.",
+  "requestFramePermissions": [],
+  "prompt": ""
+}

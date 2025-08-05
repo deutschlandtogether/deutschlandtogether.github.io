@@ -1,468 +1,59 @@
 <!DOCTYPE html>
 <html lang="ru" class="scroll-smooth">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Erding Together | Помощь Украинцам в Эрдинге & Допомога Українцям у Ердінгу</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Erding Together | Генератор Писем</title>
+    <link rel="icon" href="assets/favicon.ico" sizes="any">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script>
-        tailwind.config = {
-            darkMode: 'class',
-        }
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+            },
+            keyframes: {
+              fadeIn: {
+                '0%': { opacity: '0', transform: 'translateY(10px)' },
+                '100%': { opacity: '1', transform: 'translateY(0)' },
+              },
+            },
+            animation: {
+              'fade-in': 'fadeIn 0.5s ease-out forwards',
+            },
+          },
+        },
+      }
     </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        body {
-            font-family: 'Inter', sans-serif;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        .hero-gradient {
-            background: linear-gradient(90deg, #3b82f6, #6366f1);
-        }
-        .important-notice {
-            background-color: #fffbeb;
-            border-left: 4px solid #facc15;
-            padding: 1rem;
-        }
-        .dark .important-notice {
-            background-color: #27272a;
-            border-left-color: #f59e0b;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in {
-            animation: fadeIn 0.3s ease-out forwards;
-        }
-        .link-animated {
-            transition: all 0.25s cubic-bezier(.4,0,.2,1);
-            box-shadow: 0 1px 4px 0 rgb(0 0 0 / 0.04);
-        }
-        .link-animated:hover, .link-animated:focus-visible {
-            transform: scale(1.05);
-            opacity: 0.93;
-            box-shadow: 0 2px 12px 0 rgb(59 130 246 / 0.08), 0 1.5px 5px 0 rgb(99 102 241 / 0.06);
-            z-index: 2;
-        }
-        .link-animated:active {
-            transform: scale(0.97);
-            opacity: 0.89;
-        }
-        .btn-animated {
-            box-shadow: 0 1px 6px 0 rgb(59 130 246 / 0.09);
-            transition: all 0.25s cubic-bezier(.4,0,.2,1);
-        }
-        .btn-animated:hover, .btn-animated:focus-visible {
-            transform: scale(1.05);
-            box-shadow: 0 2px 16px 0 rgb(59 130 246 / 0.14);
-            opacity: 0.93;
-        }
-        .btn-animated:active {
-            transform: scale(0.97);
-            opacity: 0.89;
-        }
-        .remove-member-btn:focus, .remove-member-btn:focus-visible {
-            box-shadow: 0 0 0 4px #ef4444cc !important;
-            outline: none !important;
-            transition: box-shadow 0.15s cubic-bezier(.4,0,.2,1);
-        }
-        @keyframes fadeOutSmooth {
-            from {
-                opacity: 1;
-                transform: scaleY(1);
-            }
-            to {
-                opacity: 0;
-                transform: scaleY(0.7);
-            }
-        }
-        .member-fade-out {
-            animation: fadeOutSmooth 260ms cubic-bezier(.4,0,.2,1) forwards;
-            will-change: opacity, transform;
-            overflow: hidden;
-        }
+      body {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
     </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.1.1/",
+    "react": "https://esm.sh/react@^19.1.1",
+    "react-router-dom": "https://esm.sh/react-router-dom@^7.7.1",
+    "react-dom/": "https://esm.sh/react-dom@^19.1.1/",
+    "docxtemplater": "https://esm.sh/docxtemplater@3.47.2",
+    "file-saver": "https://esm.sh/file-saver@2.0.5",
+    "pizzip": "https://esm.sh/pizzip@3.1.7"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
 </head>
-<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
-<div class="pointer-events-none fixed top-0 left-0 w-full h-28 z-50" style="background:linear-gradient(180deg,rgba(30,32,50,0.50),transparent);"></div>
-<div class="pointer-events-none fixed bottom-0 left-0 w-full h-16 z-50" style="background:linear-gradient(0deg,rgba(30,32,50,0.25),transparent);"></div>
-    <header class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-md sticky top-0 z-50 transition-colors duration-300">
-        <nav class="container mx-auto px-4 sm:px-6 py-3 flex justify-between items-center">
-            <a href="#" class="text-xl sm:text-2xl font-bold text-blue-600 dark:text-blue-400 link-animated rounded-lg p-1">Erding Together</a>
-            <div class="flex items-center space-x-2 sm:space-x-4">
-                <div class="hidden md:flex space-x-6">
-                    <a href="#generator" class="nav-link link-animated">Генератор</a>
-                    <a href="#help" class="nav-link link-animated">Помощь</a>
-                    <a href="#instructions" class="nav-link link-animated">Инструкции</a>
-                </div>
-                <button id="theme-toggle" class="text-gray-600 dark:text-gray-300 focus:outline-none rounded-full p-2 btn-animated link-animated">
-                    <i id="theme-icon" class="fas fa-moon text-lg"></i>
-                </button>
-                <div class="md:hidden">
-                    <button id="menu-btn" class="text-gray-600 dark:text-gray-300 focus:outline-none p-2 btn-animated link-animated rounded-lg">
-                        <i class="fas fa-bars fa-lg"></i>
-                    </button>
-                </div>
-            </div>
-        </nav>
-        <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
-            <a href="#generator" class="block py-2 px-4 text-sm nav-link link-animated">Генератор</a>
-            <a href="#help" class="block py-2 px-4 text-sm nav-link link-animated">Помощь</a>
-            <a href="#instructions" class="block py-2 px-4 text-sm nav-link link-animated">Инструкции</a>
-        </div>
-    </header>
-
-    <main>
-        <section class="hero-gradient text-white py-20">
-            <div class="container mx-auto text-center px-6">
-                <h1 class="text-4xl md:text-5xl font-bold mb-4 animate-fade-in">Ваши права в Германии</h1>
-                <p class="text-lg md:text-xl mb-8 animate-fade-in">Простые инструменты для самозащиты при общении с властями в районе Эрдинг.</p>
-                <a href="#generator" class="bg-white text-blue-600 font-bold py-3 px-8 rounded-full btn-animated link-animated shadow-lg animate-fade-in">Создать письмо-требование</a>
-            </div>
-        </section>
-
-        <section id="generator" class="py-16">
-            <div class="container mx-auto px-4 sm:px-6">
-                <div class="bg-white dark:bg-gray-800 p-6 sm:p-8 rounded-xl shadow-lg max-w-4xl mx-auto animate-fade-in">
-                    <h2 class="text-3xl font-bold text-center mb-6">Генератор официальных писем</h2>
-                    <p class="text-center text-gray-600 dark:text-gray-400 mb-8">Заполните поля ниже, и система создаст юридически грамотное письмо на немецком. Его можно будет скопировать или скачать как PDF.</p>
-                    <form id="letter-form" class="space-y-6">
-                        <div class="grid sm:grid-cols-2 gap-6">
-                            <div>
-                                <label for="fullName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Имя и Фамилия (латиницей)</label>
-                                <input type="text" id="fullName" placeholder="Oleksandr Melnyk" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white dark:bg-gray-700" required>
-                            </div>
-                            <div>
-                                <label for="dob" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Дата рождения</label>
-                                <input type="text" id="dob" placeholder="дд.мм.гггг" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white dark:bg-gray-700" required>
-                            </div>
-                            <div>
-                                <label for="address" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Адрес (улица, дом)</label>
-                                <input type="text" id="address" placeholder="Dr.-Henkel-Str. 14" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white dark:bg-gray-700" required>
-                            </div>
-                            <div>
-                               <label for="city" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Индекс и город</label>
-                                <input type="text" id="city" placeholder="85435 Erding" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white dark:bg-gray-700" required>
-                            </div>
-                        </div>
-                        <div id="family-members-container" class="space-y-4">
-                            <label class="block text-gray-700 dark:text-gray-300 font-medium">Члены семьи (если нужно):</label>
-                        </div>
-                        <button type="button" id="add-member-btn" class="inline-flex items-center text-blue-600 dark:text-blue-400 hover:underline link-animated rounded focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"> <i class="fas fa-plus-circle mr-2"></i>Добавить члена семьи </button>
-                        <div>
-                            <label for="letterType" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Выберите тип письма:</label>
-                            <select id="letterType" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                                <option value="fiktion">Требование о выдаче Fiktionsbescheinigung</option>
-                                <option value="translation_costs">Запрос на оплату перевода документов</option>
-                            </select>
-                        </div>
-                        <div id="dynamic-fields" class="space-y-6"></div>
-                        <button type="submit" class="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg btn-animated link-animated">Сгенерировать письмо</button>
-                    </form>
-                    <div id="result-container" class="mt-8 hidden animate-fade-in">
-                        <h3 class="text-2xl font-bold mb-4">Ваше письмо готово:</h3>
-                        <div class="relative">
-                            <textarea id="result-text" class="w-full h-64 p-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700" readonly></textarea>
-                            <button id="copy-btn" class="absolute top-3 right-3 bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-200 px-3 py-1 rounded-lg btn-animated link-animated">
-                                <i class="fas fa-copy mr-2"></i>Копировать
-                            </button>
-                        </div>
-                        <div class="mt-4 grid sm:grid-cols-2 gap-4">
-                            <button id="pdf-btn" type="button" class="w-full bg-green-600 text-white font-bold py-3 px-6 rounded-lg btn-animated link-animated">
-                                <i class="fas fa-print mr-2"></i>Скачать PDF (с подписью)
-                            </button>
-                             <button id="pdf-no-sign-btn" type="button" class="w-full bg-teal-600 text-white font-bold py-3 px-6 rounded-lg btn-animated link-animated">
-                                <i class="fas fa-fax mr-2"></i>Скачать PDF (для факса)
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="help" class="py-16 bg-white dark:bg-gray-800">
-            <div class="container mx-auto px-6 max-w-4xl">
-                <h2 class="text-3xl font-bold text-center mb-10 animate-fade-in">Куда обращаться за бесплатной помощью?</h2>
-                <div class="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-6 rounded-lg shadow-md animate-fade-in">
-                    <h3 class="text-2xl font-bold mb-3 text-blue-800 dark:text-blue-300">Münchner Flüchtlingsrat</h3>
-                    <p class="text-gray-700 dark:text-gray-300 mb-4">Эта организация готова оказывать <strong>бесплатную юридическую помощь</strong> людям, столкнувшимся с проблемами в Эрдинге. Они консультируют на английском и немецком языках и могут сопровождать вас в общении с ведомствами и в суде.</p>
-                    <p class="text-gray-700 dark:text-gray-300 mb-4">Они уже успешно помогли нескольким семьям получить § 24 AufenthG после неправомерных задержек и отказов со стороны LRA Эрдинг.</p>
-                    <div class="space-y-2">
-                        <p class="font-medium"><i class="fas fa-envelope mr-2 text-blue-500"></i><a href="mailto:info@muenchner-fluechtlingsrat.de" class="nav-link link-animated">info@muenchner-fluechtlingsrat.de</a></p>
-                        <p class="font-medium"><i class="fas fa-phone-alt mr-2 text-blue-500"></i>089-123-900-96</p>
-                        <p class="font-medium"><i class="fas fa-globe mr-2 text-blue-500"></i><a href="https://muenchner-fluechtlingsrat.de/" target="_blank" rel="noopener noreferrer" class="nav-link link-animated">muenchner-fluechtlingsrat.de</a></p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="instructions" class="py-16">
-            <div class="container mx-auto px-6">
-                <h2 class="text-3xl font-bold text-center mb-10 animate-fade-in">Как отправить письмо? (Инструкция)</h2>
-                 <div class="max-w-4xl mx-auto space-y-8">
-                    <div class="grid md:grid-cols-2 gap-8">
-                        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md animate-fade-in">
-                            <h4 class="text-xl font-bold mb-2">1. Отправка по факсу (Быстро)</h4>
-                            <p class="text-gray-600 dark:text-gray-400">Нажмите "Скачать PDF для факса". Используйте онлайн-сервисы типа <strong>simple-fax.de</strong>.</br>Факс — это официальное доказательство отправки.</br>Факс-номер LRA Erding: <strong>+49 8122 58-1279</strong>.</p>
-                        </div>
-                        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md animate-fade-in">
-                             <h4 class="text-xl font-bold mb-2">2. Отправка по почте (Приложения)</h4>
-                             <p class="text-gray-600 dark:text-gray-400">Нажмите</br>"Скачать PDF (с подписью)", распечатайте и подпишите.</br>Отправляйте как <strong>Einschreiben (заказное письмо)</strong> для получения квитанции.</p>
-                        </div>
-                    </div>
-                    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md animate-fade-in">
-                        <h4 class="text-xl font-bold mb-2">3. Как подписать конверт</h4>
-                        <p class="text-gray-600 dark:text-gray-400">Если отправляете почтой, распечатайте PDF с подписью. Купите конверт и правильно подпишите его.</p></br>
-                        <div class="hidden md:block">
-                             <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg font-mono text-sm text-gray-800 dark:text-gray-200 relative">
-                                <div class="aspect-[1.7/1] w-full relative border border-gray-300 dark:border-gray-600 rounded-md p-4">
-                                    <div class="absolute top-4 left-4">
-                                        <p class="font-semibold text-xs">Absender:</p>
-                                        <p id="absender-name">[Ваши Имя Фамилия]</p>
-                                        <p id="absender-street">[Ваша Улица, Дом]</p>
-                                        <p id="absender-city">[Ваш Индекс и Город]</p>
-                                    </div>
-                                    <div class="absolute top-4 right-4">
-                                        <div class="w-12 h-16 border-2 border-dashed border-gray-400 flex items-center justify-center text-xs font-semibold text-gray-500 dark:text-gray-400">MARKE</div>
-                                    </div>
-                                    <div class="absolute" style="top: 85%; right: 4%; transform: translateY(-50%);">
-                                        <p class="font-semibold text-xs">Empfänger:</p>
-                                        <p>Landratsamt Erding</p>
-                                        <p>Alois-Schießl-Platz 2</p>
-                                        <p>85435 Erding</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="md:hidden text-center">
-                            <p class="text-gray-600 dark:text-gray-400">Пожалуйста, следуйте подробной инструкции по ссылке:</p>
-                            <a href="https://www.enlineschool.com/blog-de/kak-podpisat-konvert-v-germanii/" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:underline font-semibold mt-2 inline-block btn-animated link-animated">Инструкция, как подписать конверт</a>
-                        </div>
-                    </div>
-                 </div>
-            </div>
-        </section>
-    </main>
-
-    <footer class="bg-gray-900 dark:bg-black text-white py-8">
-        <div class="container mx-auto text-center px-6">
-            <p class="text-gray-400">Erding Together — некоммерческое неофициальное объединение</p>
-            <a href="https://t.me/ErdingTogether" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 transition mt-2 inline-block btn-animated link-animated">
-                <i class="fab fa-telegram mr-2"></i>Присоединяйтесь к нашему Telegram
-            </a>
-        </div>
-    </footer>
-
-    <script>
-        // --- Dark Mode Logic ---
-        const themeToggleBtn = document.getElementById('theme-toggle');
-        const themeIcon = document.getElementById('theme-icon');
-        const applyTheme = (theme) => {
-            if (theme === 'dark') {
-                document.documentElement.classList.add('dark');
-                themeIcon.classList.replace('fa-moon', 'fa-sun');
-            } else {
-                document.documentElement.classList.remove('dark');
-                themeIcon.classList.replace('fa-sun', 'fa-moon');
-            }
-        };
-        const themeCheck = () => {
-            const userTheme = localStorage.getItem('theme');
-            const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            applyTheme(userTheme || (systemTheme ? 'dark' : 'light'));
-        };
-        themeToggleBtn.addEventListener('click', () => {
-            const newTheme = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
-            localStorage.setItem('theme', newTheme);
-            applyTheme(newTheme);
-        });
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-            if (!localStorage.getItem('theme')) applyTheme(e.matches ? 'dark' : 'light');
-        });
-        themeCheck();
-
-        // --- Mobile Menu Logic ---
-        const menuBtn = document.getElementById('menu-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
-        menuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
-
-        // --- Family Member Logic ---
-        const addMemberBtn = document.getElementById('add-member-btn');
-        const familyContainer = document.getElementById('family-members-container');
-        let memberCount = 0;
-        addMemberBtn.addEventListener('click', () => {
-            memberCount++;
-            const memberDiv = document.createElement('div');
-            memberDiv.id = `member-${memberCount}`;
-            memberDiv.className = 'grid sm:grid-cols-3 gap-4 mb-4 items-center animate-fade-in';
-            memberDiv.innerHTML = `<input type="text" placeholder="Olha Melnyk" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 member-name" required><input type="text" placeholder="дд.мм.гггг" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 member-dob" required><button type="button" class="bg-red-500 text-white px-3 py-2 rounded-lg hover:bg-red-600 remove-member-btn btn-animated link-animated" data-id="${memberCount}"><i class="fas fa-trash-alt"></i></button>`;
-            familyContainer.appendChild(memberDiv);
-            setupDateInputFormatting(memberDiv.querySelector('.member-dob'));
-        });
-        familyContainer.addEventListener('click', e => {
-            const removeButton = e.target.closest('.remove-member-btn');
-            if (removeButton) {
-                const memberToRemove = document.getElementById(`member-${removeButton.dataset.id}`);
-                if (memberToRemove) {
-                    memberToRemove.classList.add('member-fade-out');
-                    setTimeout(() => memberToRemove.remove(), 260);
-                }
-            }
-        });
-
-        // --- Dynamic Fields Logic ---
-        const letterTypeSelect = document.getElementById('letterType');
-        const dynamicFieldsContainer = document.getElementById('dynamic-fields');
-        const updateDynamicFields = () => {
-            dynamicFieldsContainer.innerHTML = '';
-            const type = letterTypeSelect.value;
-            const fieldHTML = type === 'fiktion'
-                ? `<div><label for="applicationDate" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Дата подачи заявления на ВНЖ (§ 24)</label><input type="text" id="applicationDate" placeholder="дд.мм.гггг" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700" required></div>`
-                : `<div><label for="lraLetterDate" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Дата письма от LRA с требованием перевода</label><input type="text" id="lraLetterDate" placeholder="дд.мм.гггг" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700" required></div>`;
-            dynamicFieldsContainer.innerHTML = fieldHTML;
-            setupDateInputFormatting(dynamicFieldsContainer.querySelector('input'));
-        };
-        letterTypeSelect.addEventListener('change', updateDynamicFields);
-        updateDynamicFields();
-
-        // --- Form Generation ---
-        const form = document.getElementById('letter-form');
-        const resultContainer = document.getElementById('result-container');
-        const resultText = document.getElementById('result-text');
-
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const fullName = document.getElementById('fullName').value;
-            const dob = document.getElementById('dob').value;
-            const address = document.getElementById('address').value;
-            const city = document.getElementById('city').value;
-            const letterType = letterTypeSelect.value;
-            const currentDate = new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
-
-            let familyString = `\nAntragstellende Person(en):\n- ${fullName}, geboren am ${dob}`;
-            const members = document.querySelectorAll('#family-members-container > div');
-            members.forEach(member => {
-                const name = member.querySelector('.member-name').value;
-                const memberDob = member.querySelector('.member-dob').value;
-                if (name && memberDob) familyString += `\n- ${name}, geboren am ${memberDob}`;
-            });
-            if (members.length === 0) familyString = '';
-
-            let letterContent = '';
-
-            if (letterType === 'fiktion') {
-                const appDate = document.getElementById('applicationDate').value;
-                letterContent = `${fullName}, geboren am ${dob}\n${address}\n${city}\n\nAn das\nLandratsamt Erding\nAusländerbehörde\nAlois-Schießl-Platz 2\n85435 Erding\n\n${currentDate}\n\nBetreff: Aufforderung zur unverzüglichen Ausstellung einer Fiktionsbescheinigung\n${familyString}\n\nSehr geehrte Damen und Herren,\n\nich/wir habe(n) am ${appDate} einen Antrag auf Erteilung einer Aufenthaltserlaubnis nach § 24 AufenthG gestellt.\n\nGemäß § 81 Abs. 5 Aufenthaltsgesetz (AufenthG) "ist" dem Ausländer eine Bescheinigung über die Wirkung seiner Antragstellung (Fiktionsbescheinigung) auszustellen. Dies begründet eine zwingende gesetzliche Pflicht und lässt der Behörde keinerlei Ermessensspielraum.\n\nBis heute wurde eine solche Bescheinigung nicht ausgestellt.\n\nIch fordere Sie hiermit auf, mir/uns die zustehende(n) Fiktionsbescheinigung(en) unverzüglich, spätestens jedoch innerhalb von 7 (sieben) Werktagen, auszustellen und zukommen zu lassen.\n\nSollte diese Frist fruchtlos verstreichen, werde ich ohne weitere Ankündigung gerichtliche Schritte einleiten.\n\nMit freundlichen Grüßen\n______________________ (Unterschrift)\n${fullName}`;
-            } else if (letterType === 'translation_costs') {
-                const lraDate = document.getElementById('lraLetterDate').value;
-                letterContent = `${fullName}, geboren am ${dob}\n${address}\n${city}\n\nAn das\nLandratsamt Erding\nLeistungsabteilung / Fachbereich 24\nAlois-Schießl-Platz 2\n85435 Erding\n\n${currentDate}\n\nBetreff: Antrag auf Kostenübernahme für notwendige Übersetzungen gemäß § 6 Abs. 1 AsylbLG\nIhr Schreiben vom ${lraDate}\n${familyString}\n\nSehr geehrte Damen und Herren,\n\nin Ihrem Schreiben vom ${lraDate} fordern Sie mich auf, diverse Dokumente in beglaubigter Übersetzung vorzulegen.\n\nDa ich/wir Leistungen nach dem Asylbewerberleistungsgesetz beziehe(n) und über keine eigenen Mittel zur Deckung dieser Kosten verfüge(n), beantrage ich hiermit die vollständige Übernahme der Kosten für die notwendigen Übersetzungen gemäß § 6 Abs. 1 AsylbLG.\n\nIch bitte um eine schriftliche Bestätigung der Kostenübernahme.\n\nIch setze eine Frist zur Bearbeitung dieses Antrags von 14 Tagen.\n\nMit freundlichen Grüßen\n\n\n______________________ (Unterschrift)\n${fullName}`;
-            }
-
-            resultText.value = letterContent.trim().replace(/Mit freundlichen Grüßen,\n\n\n/g, 'Mit freundlichen Grüßen\n\n');
-            resultContainer.classList.remove('hidden');
-        });
-
-        // --- Copy & PDF Button Logic ---
-        const copyBtn = document.getElementById('copy-btn');
-        copyBtn.addEventListener('click', () => {
-            resultText.select();
-            resultText.setSelectionRange(0, 99999);
-            try {
-                document.execCommand('copy');
-                copyBtn.innerHTML = '<i class="fas fa-check mr-2"></i>Скопировано!';
-                setTimeout(() => { copyBtn.innerHTML = '<i class="fas fa-copy mr-2"></i>Копировать'; }, 2000);
-            } catch (err) { alert('Ошибка копирования'); }
-        });
-
-        const generatePdf = (includeSignature) => {
-            try {
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
-
-                let letterText = resultText.value;
-                let finalLines;
-
-                if (!includeSignature) {
-                    letterText = letterText.replace(/______________________ \(Unterschrift\)\n/g, '');
-                }
-
-                doc.setFont('Arial', 'normal');
-                doc.setFontSize(12);
-
-                const lines = doc.splitTextToSize(letterText, 180);
-
-                // Find and format the "Betreff" line
-                const betreffIndex = lines.findIndex(line => line.startsWith('Betreff:'));
-                if(betreffIndex !== -1) {
-                    const betreffLine = lines[betreffIndex];
-                    lines.splice(betreffIndex, 1);
-
-                    let yPos = 20 + (betreffIndex * 7); // Calculate position
-                    const restOfLines = lines.splice(betreffIndex);
-
-                    doc.text(lines, 15, 20); // Print lines before Betreff
-
-                    doc.setFont(undefined, 'bold');
-                    doc.text(betreffLine, 15, yPos);
-
-                    doc.setFont(undefined, 'normal');
-                    doc.text(restOfLines, 15, yPos + 7);
-                } else {
-                     doc.text(lines, 15, 20);
-                }
-
-                const now = new Date();
-                const formattedDate = now.toLocaleDateString('de-DE').replace(/\./g, '_');
-                doc.save(`Anschreiben_LRA_Erding_${formattedDate}.pdf`);
-
-            } catch(e) {
-                console.error("PDF Generation Error: ", e);
-                alert("Не удалось сгенерировать PDF. Возможно, в вашем браузере есть ограничения. Попробуйте скопировать текст и вставить его в текстовый редактор.");
-            }
-        };
-
-        document.getElementById('pdf-btn').addEventListener('click', () => generatePdf(true));
-        document.getElementById('pdf-no-sign-btn').addEventListener('click', () => generatePdf(false));
-
-        // --- Date Input Formatting Logic ---
-        function setupDateInputFormatting(inputElement) {
-             inputElement.addEventListener('input', function(e) {
-                let value = e.target.value.replace(/[^\d]/g, '');
-                if (value.length > 2) {
-                    value = value.substring(0, 2) + '.' + value.substring(2);
-                }
-                if (value.length > 5) {
-                    value = value.substring(0, 5) + '.' + value.substring(5, 9);
-                }
-                e.target.value = value.substring(0, 10);
-            });
-        }
-
-        setupDateInputFormatting(document.getElementById('dob'));
-        dynamicFieldsContainer.addEventListener('input', (e) => {
-            if(e.target.tagName === 'INPUT') {
-                 setupDateInputFormatting(e.target);
-            }
-        });
-        familyContainer.addEventListener('input', (e) => {
-             if(e.target.classList.contains('member-dob')){
-                 setupDateInputFormatting(e.target);
-             }
-        })
-
-        // --- Dynamic Absender ---
-        function updateAbsender() {
-            document.getElementById('absender-name').textContent = document.getElementById('fullName').value || '[Ваши Имя Фамилия]';
-            document.getElementById('absender-street').textContent = document.getElementById('address').value || '[Ваша Улица, Дом]';
-            document.getElementById('absender-city').textContent = document.getElementById('city').value || '[Ваш Индекс и Город]';
-        }
-        ['fullName','address','city'].forEach(id => {
-            document.getElementById(id).addEventListener('input', updateAbsender);
-        });
-        updateAbsender();
-    </script>
+  <body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-300">
+    <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
 </body>
 </html>
