@@ -9,15 +9,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "react": "^19.1.1",
-    "react-router-dom": "^7.7.1",
-    "react-dom": "^19.1.1",
     "docxtemplater": "3.47.2",
     "file-saver": "2.0.5",
-    "pizzip": "3.1.7"
+    "pizzip": "3.1.7",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "react-router-dom": "^7.7.1"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
+    "@vitejs/plugin-react": "^4.7.0",
     "typescript": "~5.8.2",
     "vite": "^6.2.0"
   }
