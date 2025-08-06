@@ -48,7 +48,7 @@ const prepareData = (data: UserData & InactionTemplateData, letterType: LetterTy
 }
 
 const generateDocxBlob = async (letterType: LetterType, templateFile: string, data: UserData & InactionTemplateData): Promise<Blob> => {
-    const templatePath = `/assets/templates/${templateFile}`;
+    const templatePath = `/templates/${templateFile}`;
     const response = await fetch(templatePath);
     if (!response.ok) {
         throw new Error(`Не удалось загрузить шаблон: ${response.statusText}`);
