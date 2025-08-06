@@ -29,7 +29,7 @@ const templates: Record<LetterType, Template> = {
     titleKey: 'templates.oralRefusal.title',
     descriptionKey: 'templates.oralRefusal.description',
     requiredFields: ['oralRefusalDate'],
-    templateFile: 'ERDING_ABH_90Day_OrealRefuse_TEMPLATE.docx',
+    templateFile: 'ERDING_ABH_90Day_OralRefuse_TEMPLATE.docx',
     subject: 'Aufforderung zur schriftlichen Bescheidung - {NAME} {SURNAME}, geb. {DOB}',
     recipient: LRA_ERDING,
   },

@@ -1,5 +1,3 @@
-import ru from '../locales/ru.json';
-import ua from '../locales/ua.json';
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 type Language = 'ru' | 'ua';
@@ -14,22 +12,34 @@ interface I18nContextType {
 
 const I18nContext = createContext<I18nContextType | undefined>(undefined);
 
-const allTranslations: Record<Language, Translations> = { ru, ua };
+const loadTranslations = async (lang: Language): Promise<Translations> => {
+  const response = await fetch(`/locales/${lang}.json`);
+  if (!response.ok) throw new Error(`Failed to load translations for ${lang}`);
+  return response.json();
+};
 
 export const I18nProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [language, setLanguageState] = useState<Language>(
     () => (localStorage.getItem('language') as Language) || 'ru'
   );
-  const [isLoading, setIsLoading] = useState(false);
+  const [translations, setTranslations] = useState<Translations>({});
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setIsLoading(true);
+    loadTranslations(language)
+      .then(setTranslations)
+      .catch((err) => {
+        console.error(err);
+        setTranslations({});
+      })
+      .finally(() => setTimeout(() => setIsLoading(false), 200));
+  }, [language]);
 
   const setLanguage = (lang: Language) => {
     if (lang !== language) {
-      setIsLoading(true);
-      setTimeout(() => {
-        localStorage.setItem('language', lang);
-        setLanguageState(lang);
-        setIsLoading(false);
-      }, 200);
+      localStorage.setItem('language', lang);
+      setLanguageState(lang);
       document.documentElement.lang = lang;
     }
   };
@@ -39,12 +49,12 @@ export const I18nProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, [language]);
 
   const t = (key: string): string => {
-    return allTranslations[language][key] || key;
+    return translations[key] || key;
   };
 
   return (
     <I18nContext.Provider value={{ language, setLanguage, t, isLoading }}>
-    {children}
+      {children}
     </I18nContext.Provider>
   );
 };

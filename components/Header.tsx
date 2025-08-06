@@ -5,7 +5,7 @@ import { useTheme } from '../hooks/useTheme';
 import { useI18n } from '../hooks/useI18n';
 import { SunIcon, MoonIcon } from './icons';
 
-const NavDropdown: React.FC<{ title: React.ReactNode, children: React.ReactNode, isMobile?: boolean }> = ({ title, children, isMobile = false }) => {
+const NavDropdown: React.FC<{ title: React.ReactNode, children: React.ReactNode, onLinkClick?: () => void }> = ({ title, children, onLinkClick }) => {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -23,13 +23,12 @@ const NavDropdown: React.FC<{ title: React.ReactNode, children: React.ReactNode,
 
     const baseButtonClass = "px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 w-full text-left flex items-center justify-between";
     const desktopButtonClass = `text-gray-600 hover:bg-gray-200 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white`;
-    const mobileButtonClass = `text-gray-600 hover:bg-gray-200 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white`;
 
     return (
         <div className="relative" ref={dropdownRef}>
             <button
                 type="button"
-                className={`${baseButtonClass} ${isMobile ? mobileButtonClass : desktopButtonClass}`}
+                className={`${baseButtonClass} ${desktopButtonClass}`}
                 onClick={() => setIsOpen(prev => !prev)}
                 aria-haspopup="true"
                 aria-expanded={isOpen}
@@ -45,7 +44,10 @@ const NavDropdown: React.FC<{ title: React.ReactNode, children: React.ReactNode,
                   aria-orientation="vertical"
                 >
                     {React.Children.map(children, child => 
-                        React.isValidElement(child) ? React.cloneElement(child, { onClick: () => setIsOpen(false) } as any) : child
+                        React.isValidElement(child) ? React.cloneElement(child, { onClick: () => {
+                            setIsOpen(false);
+                            if (onLinkClick) onLinkClick();
+                        } } as any) : child
                     )}
                 </div>
             )}
@@ -54,18 +56,21 @@ const NavDropdown: React.FC<{ title: React.ReactNode, children: React.ReactNode,
 };
 
 const Header: React.FC = () => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const { language, setLanguage, t } = useI18n();
 
+  const closeMobileMenu = () => setIsMobileMenuOpen(false);
+
   const linkClass = ({ isActive }: { isActive: boolean }) =>
-    `block sm:inline-block px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
+    `block px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
       isActive
         ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300'
         : 'text-gray-600 hover:bg-gray-200 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'
     }`;
   
   const dropdownLinkClass = ({ isActive }: { isActive: boolean }) =>
-    `block px-4 py-2 text-sm ${
+    `block px-4 py-2 text-sm w-full text-left ${
         isActive
         ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300'
         : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
@@ -83,11 +88,11 @@ const Header: React.FC = () => {
     <header className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-lg sticky top-0 z-50 transition-colors duration-300">
       <div className="container mx-auto px-4 sm:px-6">
         <div className="flex justify-between items-center py-3">
-          <NavLink to="/" className="text-xl sm:text-2xl font-bold text-blue-600 dark:text-blue-400">
+          <NavLink to="/" className="text-xl sm:text-2xl font-bold text-blue-600 dark:text-blue-400" onClick={closeMobileMenu}>
             Erding Together
           </NavLink>
           
-          <nav className="hidden md:flex items-center space-x-1">
+          <nav className="hidden lg:flex items-center space-x-1">
             <NavLink to="/guides" className={linkClass}>{t('header.nav.guides')}</NavLink>
             <NavDropdown title={t('header.nav.generators')}>
                 <NavLink to="/generator" className={dropdownLinkClass}>{t('header.nav.generatorLra')}</NavLink>
@@ -110,19 +115,33 @@ const Header: React.FC = () => {
             >
               {theme === 'light' ? <MoonIcon className="h-5 w-5" /> : <SunIcon className="h-5 w-5" />}
             </button>
+            <div className="lg:hidden">
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="p-2 rounded-md text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none"
+                aria-controls="mobile-menu"
+                aria-expanded={isMobileMenuOpen}
+                aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
+              >
+                <i className={`fas ${isMobileMenuOpen ? 'fa-times' : 'fa-bars'} h-5 w-5`}></i>
+              </button>
+            </div>
           </div>
         </div>
         
-        <nav className="md:hidden flex flex-wrap justify-around items-center py-2 border-t border-gray-200 dark:border-gray-700/50">
-            <NavLink to="/guides" className={linkClass}>{t('header.nav.guides')}</NavLink>
-            <NavDropdown title={t('header.nav.generators')} isMobile>
-                <NavLink to="/generator" className={dropdownLinkClass}>{t('header.nav.generatorLra')}</NavLink>
-                <NavLink to="/rvo-generator" className={dropdownLinkClass}>{t('header.nav.generatorRvo')}</NavLink>
-                <NavLink to="/lawsuit-generator" className={dropdownLinkClass}>{t('header.nav.generatorLawsuit')}</NavLink>
-            </NavDropdown>
-            <NavLink to="/faq" className={linkClass}>{t('header.nav.faq')}</NavLink>
-            <NavLink to="/support" className={linkClass}>{t('header.nav.support')}</NavLink>
-        </nav>
+        {isMobileMenuOpen && (
+             <div className="lg:hidden animate-fade-in" id="mobile-menu" style={{animationDuration: '150ms'}}>
+                <nav className="flex flex-col space-y-1 pt-2 pb-4 border-t border-gray-200 dark:border-gray-700/50">
+                    <NavLink to="/guides" className={linkClass} onClick={closeMobileMenu}>{t('header.nav.guides')}</NavLink>
+                    <div className='px-3 pt-2 text-sm font-medium text-gray-400 dark:text-gray-500'>{t('header.nav.generators')}</div>
+                    <NavLink to="/generator" className={`${linkClass} !justify-start pl-6`} onClick={closeMobileMenu}>{t('header.nav.generatorLra')}</NavLink>
+                    <NavLink to="/rvo-generator" className={`${linkClass} !justify-start pl-6`} onClick={closeMobileMenu}>{t('header.nav.generatorRvo')}</NavLink>
+                    <NavLink to="/lawsuit-generator" className={`${linkClass} !justify-start pl-6`} onClick={closeMobileMenu}>{t('header.nav.generatorLawsuit')}</NavLink>
+                    <NavLink to="/faq" className={linkClass} onClick={closeMobileMenu}>{t('header.nav.faq')}</NavLink>
+                    <NavLink to="/support" className={linkClass} onClick={closeMobileMenu}>{t('header.nav.support')}</NavLink>
+                </nav>
+            </div>
+        )}
       </div>
     </header>
   );

@@ -1,6 +1,6 @@
 
-import React from 'react';
-import { HashRouter, Routes, Route } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { HashRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { ThemeProvider } from './hooks/useTheme';
 import { I18nProvider, useI18n } from './hooks/useI18n';
 import Header from './components/Header';
@@ -16,6 +16,13 @@ import NotFound from './views/NotFound';
 
 const AppContent: React.FC = () => {
   const { isLoading } = useI18n();
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    // Force scroll to top on path change, bypassing CSS smooth scrolling
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0; // For Safari
+  }, [pathname]);
   
   return (
       <div className={`flex flex-col min-h-screen transition-opacity duration-300 ease-in-out ${isLoading ? 'opacity-50 blur-sm' : 'opacity-100 blur-0'}`}>

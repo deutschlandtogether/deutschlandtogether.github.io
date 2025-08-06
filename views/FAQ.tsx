@@ -1,7 +1,9 @@
 
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useI18n } from '../hooks/useI18n';
 import Card from '../components/ui/Card';
+import Button from '../components/ui/Button';
 
 const renderContent = (text: string) => {
     return text.split('\n').map((paragraph, index) => {
@@ -72,6 +74,14 @@ const FAQ: React.FC = () => {
         </div>
         
         <div className="max-w-3xl mx-auto space-y-12">
+            {/* About Us */}
+            <Card>
+                <h2 className="text-2xl font-bold mb-4 text-blue-700 dark:text-blue-400">{t('faq.aboutUs.title')}</h2>
+                <div className="prose prose-blue dark:prose-invert max-w-none text-gray-700 dark:text-gray-300">
+                    {renderContent(t('faq.aboutUs.content'))}
+                </div>
+            </Card>
+
             {/* Part 1 */}
             <Card>
                 <h2 className="text-2xl font-bold mb-4 text-blue-700 dark:text-blue-400">{t('faq.part1.title')}</h2>
@@ -113,7 +123,23 @@ const FAQ: React.FC = () => {
                     {renderContent(t('faq.part4.content'))}
                 </div>
             </Card>
+
+            <div className="mt-8">
+              <Card className="text-center bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/50">
+                  <h2 className="text-2xl font-bold mb-2 text-blue-800 dark:text-blue-300">{t('faq.seeGuides.title')}</h2>
+                  <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-2xl mx-auto">{t('faq.seeGuides.description')}</p>
+                  <div className="flex justify-center">
+                    <Link to="/guides">
+                        <Button>
+                            <i className="fas fa-book-open mr-2"></i>
+                            {t('faq.seeGuides.button')}
+                        </Button>
+                    </Link>
+                  </div>
+              </Card>
+            </div>
         </div>
+
       </div>
     </div>
   );

@@ -21,7 +21,7 @@ const SendingInstructions: React.FC<{ recipient: Template['recipient'] }> = ({ r
       <div className="grid md:grid-cols-2 gap-6">
         <div className="p-4 bg-gray-100 dark:bg-gray-900/50 rounded-lg border border-gray-200 dark:border-gray-700">
           <h4 className="font-bold flex items-center text-blue-600 dark:text-blue-400"><i className="fas fa-fax mr-3 w-5 text-center"></i>{t('generator.sending.fax.title')}</h4>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">{t('generator.sending.fax.description')}</p>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mt-2" dangerouslySetInnerHTML={{ __html: t('generator.sending.fax.description') }}></p>
           <p className="text-sm font-mono mt-2 bg-white dark:bg-gray-800 p-2 rounded text-center font-semibold tracking-wider">{recipient.fax}</p>
         </div>
         <div className="p-4 bg-gray-100 dark:bg-gray-900/50 rounded-lg border border-gray-200 dark:border-gray-700">
@@ -31,6 +31,7 @@ const SendingInstructions: React.FC<{ recipient: Template['recipient'] }> = ({ r
             <p className="font-semibold">{recipient.name}</p>
             {recipient.address.map((line, i) => <p key={i}>{line}</p>)}
           </div>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mt-2" dangerouslySetInnerHTML={{ __html: t('generator.sending.mail.addressingGuide') }}></p>
         </div>
       </div>
       <p className="text-xs text-gray-500 dark:text-gray-400 mt-4 text-center italic">{t('generator.sending.emailInfo')}</p>

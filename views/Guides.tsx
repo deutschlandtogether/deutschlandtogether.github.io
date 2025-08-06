@@ -120,7 +120,7 @@ const AccordionItem: React.FC<{ guide: typeof detailedGuides[0], isOpen: boolean
             </button>
             <div className={`grid transition-all duration-500 ease-in-out ${isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
                 <div className="overflow-hidden">
-                    <div className="pt-2 pb-6">
+                    <div className="px-1 py-6">
                        <GuideContentRenderer text={t(guide.contentKey)} placeholders={guide.templatePlaceholders} />
                     </div>
                 </div>
@@ -129,54 +129,79 @@ const AccordionItem: React.FC<{ guide: typeof detailedGuides[0], isOpen: boolean
     );
 };
 
+const GuideCategorySection: React.FC<{ category: typeof guideCategories[0], guides: typeof detailedGuides, openAccordion: string | null, setOpenAccordion: (id: string | null) => void }> = ({ category, guides, openAccordion, setOpenAccordion }) => {
+    const { t } = useI18n();
+    
+    const categoryGuides = useMemo(() => {
+        return guides.filter(guide => category.guideIds.includes(guide.id))
+    }, [category, guides]);
+    
+    const handleToggle = (id: string) => {
+        setOpenAccordion(openAccordion === id ? null : id);
+    };
+
+    return (
+        <div key={category.id}>
+            <h2 className="text-3xl font-extrabold text-gray-800 dark:text-gray-200 mt-16 mb-6">{t(category.titleKey)}</h2>
+            <Card className="p-4 sm:p-6 !shadow-xl dark:!shadow-gray-700/60">
+                {categoryGuides.map(guide => (
+                    <AccordionItem 
+                        key={guide.id}
+                        guide={guide}
+                        isOpen={openAccordion === guide.id}
+                        onClick={() => handleToggle(guide.id)}
+                    />
+                ))}
+            </Card>
+        </div>
+    )
+};
+
 
 const Guides: React.FC = () => {
-  const { t } = useI18n();
-  const defaultOpenGuide = detailedGuides.find(g => g.isDefaultOpen);
-  const [openGuideId, setOpenGuideId] = useState<string | null>(defaultOpenGuide ? defaultOpenGuide.id : detailedGuides[0]?.id || null);
+    const { t } = useI18n();
+    const [openAccordion, setOpenAccordion] = useState<string | null>(() => {
+        const defaultOpen = detailedGuides.find(g => g.isDefaultOpen);
+        return defaultOpen ? defaultOpen.id : null;
+    });
 
-  const handleClick = (guideId: string) => {
-    setOpenGuideId(openGuideId === guideId ? null : guideId);
-  };
+    return (
+        <div className="py-16 animate-fade-in">
+            <div className="container mx-auto px-4 sm:px-6">
+                <div className="text-center mb-12">
+                    <h1 className="text-4xl font-extrabold mb-2">{t('guides.title')}</h1>
+                    <p className="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">{t('guides.newSubtitle')}</p>
+                </div>
+                
+                <div className="max-w-4xl mx-auto">
+                    {guideCategories.map(category => (
+                         <GuideCategorySection 
+                            key={category.id}
+                            category={category}
+                            guides={detailedGuides}
+                            openAccordion={openAccordion}
+                            setOpenAccordion={setOpenAccordion}
+                         />
+                    ))}
+                </div>
 
-  const guidesById = useMemo(() => 
-    detailedGuides.reduce((acc, guide) => {
-      acc[guide.id] = guide;
-      return acc;
-    }, {} as Record<string, typeof detailedGuides[0]>), 
-  []);
-
-  return (
-    <div className="py-16 animate-fade-in">
-      <div className="container mx-auto px-4 sm:px-6">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-extrabold mb-2">{t('guides.title')}</h1>
-          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">{t('guides.newSubtitle')}</p>
-        </div>
-        <div className="max-w-4xl mx-auto space-y-12">
-          {guideCategories.map((category) => (
-            <div key={category.id}>
-              <h2 className="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200 border-b-2 border-blue-500 pb-2">{t(category.titleKey)}</h2>
-              <Card className="p-4 sm:p-8">
-                {category.guideIds.map((guideId) => {
-                  const guide = guidesById[guideId];
-                  if (!guide) return null;
-                  return (
-                    <AccordionItem
-                      key={guide.id}
-                      guide={guide}
-                      isOpen={openGuideId === guide.id}
-                      onClick={() => handleClick(guide.id)}
-                    />
-                  );
-                })}
-              </Card>
+                <div className="max-w-4xl mx-auto mt-16">
+                    <Card className="text-center bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/50">
+                        <h2 className="text-2xl font-bold mb-2 text-blue-800 dark:text-blue-300">{t('guides.seeFaq.title')}</h2>
+                        <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-2xl mx-auto">{t('guides.seeFaq.description')}</p>
+                        <div className="flex justify-center">
+                            <Link to="/faq">
+                                <Button variant="secondary">
+                                    <i className="fas fa-question-circle mr-2"></i>
+                                    {t('guides.seeFaq.button')}
+                                </Button>
+                            </Link>
+                        </div>
+                    </Card>
+                </div>
             </div>
-          ))}
         </div>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default Guides;

@@ -27,7 +27,7 @@ const LawsuitGenerator: React.FC = () => {
           
           <h1 className="text-4xl font-extrabold text-center">{t('lawsuitGenerator.title')}</h1>
 
-          <Card className="border-2 border-red-500/50 shadow-red-500/10 dark:shadow-red-500/20">
+          <Card className="border-2 border-red-500/50 shadow-red-500/10 dark:shadow-red-500/20 hover:!shadow-red-500/40 dark:hover:!shadow-red-400/40">
             <div className="flex items-start">
               <i className="fas fa-exclamation-triangle text-3xl text-red-500 mr-4 mt-1"></i>
               <div>
